@@ -77,6 +77,7 @@ const Lists = () => {
       console.error('Error fetching agents:', err);
     }
   };
+  
 
   // Fetch batch details
   const fetchBatchDetails = async (batchId) => {
@@ -190,7 +191,26 @@ const Lists = () => {
     }
   };
 
-  // Update batch status
+const [openDropdownId, setOpenDropdownId] = useState(null);
+const dropdownRef = useRef(null);
+const toggleDropdown = (batchId) => {
+  setOpenDropdownId(prev => (prev === batchId ? null : batchId));
+};
+// useEffect(() => {
+//   function handleClickOutside(event) {
+//     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//       // Add a small delay to allow button clicks to execute
+//       setTimeout(() => setOpenDropdownId(null), 100);
+//     }
+//   }
+
+//   document.addEventListener('mousedown', handleClickOutside);
+//   return () => {
+//     document.removeEventListener('mousedown', handleClickOutside);
+//   };
+// }, []);
+
+// Update batch status
   const updateBatchStatus = async (batchId, status) => {
     try {
       setLoading(true);
@@ -276,129 +296,136 @@ const Lists = () => {
         pauseOnHover
       />
       
-      <div className="mb-4">
-        <h1>Lists Management</h1>
-      </div>
+     <div className="mb-6">
+  <h1 className="text-3xl font-bold text-gray-800"> Lists Management</h1>
+</div>
 
-      {error && (
-        <div className="mb-4">
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            {error}
+{error && (
+  <div className="mb-6">
+    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow" role="alert">
+      {error}
+    </div>
+  </div>
+)}
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  {/* Upload & Distribute Card */}
+  <div className="bg-white shadow-md rounded-2xl p-6">
+    <h2 className="text-xl font-semibold text-gray-700 mb-4">📤 Upload & Distribute List</h2>
+
+    <p className="text-sm text-gray-500 mb-2">
+      Tasks will be distributed equally among 5 agents. You currently have <strong>{agentCount}</strong> agent(s).
+    </p>
+    {agentCount < 5 && (
+      <div className="text-sm text-red-600 mb-4 font-medium">
+        ⚠️ Please add <strong>{5 - agentCount}</strong> more agent(s) before uploading.
+      </div>
+    )}
+
+    <Formik
+      initialValues={{ file: null }}
+      validationSchema={UploadSchema}
+      onSubmit={handleUpload}
+    >
+      {({ values, errors, touched, handleSubmit, setFieldValue, isSubmitting }) => (
+        <Form onSubmit={handleSubmit}>
+          {errors.submit && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-3">
+              {errors.submit}
+            </div>
+          )}
+
+          <div className="mb-4">
+            <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
+              Select CSV or Excel File
+            </label>
+            <input
+              id="file"
+              name="file"
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.currentTarget.files && e.currentTarget.files[0]) {
+                  setFieldValue('file', e.currentTarget.files[0]);
+                }
+              }}
+              accept=".csv,.xlsx,.xls"
+              className={`w-full border ${touched.file && errors.file ? 'border-red-400' : 'border-gray-300'} rounded-md shadow-sm focus:ring-skyblue focus:border-skyblue text-sm`}
+            />
+            <p className="text-xs text-gray-500 mt-1">Supported formats: CSV, XLSX, XLS</p>
           </div>
-        </div>
+
+         <button
+  type="submit"
+  disabled={isSubmitting || loading || agentCount < 5}
+  className="flex items-center justify-center gap-2 px-4 py-2 text-white rounded-md shadow-md transition-colors duration-200 disabled:opacity-50"
+  style={{
+    backgroundColor: '#4cabd9',
+    cursor: isSubmitting || loading || agentCount < 5 ? 'not-allowed' : 'pointer',
+  }}
+  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3a99c7')}
+  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4cabd9')}
+>
+  {isSubmitting || loading ? (
+    <>
+      <svg
+        className="animate-spin h-5 w-5 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0..."
+        />
+      </svg>
+      Uploading...
+    </>
+  ) : (
+    <>
+      <FaUpload className="text-white" />
+      Upload & Distribute
+    </>
+  )}
+</button>
+
+        </Form>
       )}
+    </Formik>
+  </div>
 
-      <div className="mb-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="col-span-2">
-            <div className="bg-white shadow-sm">
-              <div className="p-4">
-                <h5 className="card-title mb-4">Upload & Distribute List</h5>
-                
-                <div className="mb-4">
-                  <p className="text-sm text-gray-500">
-                    Tasks will be distributed equally among 5 agents. Currently you have {agentCount} agent(s).
-                    {agentCount < 5 && (
-                      <div className="mt-2">
-                        <strong>You need to add {5 - agentCount} more agent(s) before uploading.</strong>
-                      </div>
-                    )}
-                  </p>
-                </div>
-                
-                <Formik
-                  initialValues={{ file: null }}
-                  validationSchema={UploadSchema}
-                  onSubmit={handleUpload}
-                >
-                  {({ values, errors, touched, handleSubmit, setFieldValue, isSubmitting }) => (
-                    <Form onSubmit={handleSubmit}>
-                      {errors.submit && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-3">
-                          {errors.submit}
-                        </div>
-                      )}
+  {/* Quick Actions Card */}
+  <div className="bg-white shadow-md rounded-2xl p-6 h-fit">
+    <h2 className="text-xl font-semibold text-gray-700 mb-4">⚡ Quick Actions</h2>
 
-                      <div className="mb-3">
-                        <label htmlFor="file" className="block text-sm font-medium text-gray-700">
-                          Select CSV or Excel File
-                        </label>
-                        <input
-                          id="file"
-                          name="file"
-                          type="file"
-                          ref={fileInputRef}
-                          onChange={(e) => {
-                            if (e.currentTarget.files && e.currentTarget.files[0]) {
-                              setFieldValue('file', e.currentTarget.files[0]);
-                            }
-                          }}
-                          className={`mt-1 block w-full border ${touched.file && errors.file ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                          accept=".csv,.xlsx,.xls"
-                        />
-                        <p className="text-xs text-gray-500">
-                          Supported formats: CSV, XLSX, XLS
-                        </p>
-                      </div>
+    <div className="grid gap-3">
+      <button
+        className="flex items-center justify-center gap-2 px-4 py-2 bg-skyblue transition-colors duration-200 text-white rounded-md shadow-md"
+        onClick={() => agents.length > 0 ? setShowAgentItemsModal(true) : setError('No agents found. Please add agents first.')}
+      >
+        <FaUsers />
+        View Agent Lists
+      </button>
 
-                      <div className="mt-4">
-                        <button
-                          type="submit"
-                          className="px-4 py-2 bg-indigo-600 text-white rounded-md"
-                          disabled={isSubmitting || loading || agentCount < 5}
-                        >
-                          {isSubmitting || loading ? (
-                            <div className="flex items-center justify-center">
-                              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.163 0 1 5.163 1 12s5.163 12 12 12 12-5.163 12-12S18.837 0 12 0v4c3.309 0 6.309 1.323 8.631 3.569a11.989 11.989 0 01-2.034 2.034c-1.433 1.433-3.375 2.25-5.469 2.25-5.814 0-10.5-4.686-15.186-10.5-15.186z"></path>
-                              </svg>
-                              Uploading...
-                            </div>
-                          ) : (
-                            <div className="flex items-center">
-                              <FaUpload className="mr-2" />
-                              Upload & Distribute
-                            </div>
-                          )}
-                        </button>
-                      </div>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-2">
-            <div className="bg-white shadow-sm h-full">
-              <div className="p-4">
-                <h5 className="card-title mb-4">Quick Actions</h5>
-                <div className="grid gap-2">
-                  <button
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-md"
-                    onClick={() => agents.length > 0 ? setShowAgentItemsModal(true) : setError('No agents found. Please add agents first.')}
-                  >
-                    <div className="flex items-center">
-                      <FaUsers className="mr-2" />
-                      View Agent Lists
-                    </div>
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-md"
-                    onClick={() => window.open('/sample_template.csv', '_blank')}
-                  >
-                    <div className="flex items-center">
-                      <FaFileAlt className="mr-2" />
-                      Download Sample Template
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button
+        className="flex items-center justify-center gap-2 px-4 py-2 bg-skyblue  transition-colors duration-200 text-white rounded-md shadow-md"
+        onClick={() => window.open('/sample_template.csv', '_blank')}
+      >
+        <FaFileAlt />
+        Download Sample Template
+      </button>
+    </div>
+  </div>
+</div>
 
       <div className="mt-4">
         <div className="bg-white shadow-sm">
@@ -407,25 +434,25 @@ const Lists = () => {
               <h5 className="card-title mb-0">List Batches</h5>
               <div className="flex items-center">
                 <button
-                  className={`px-2 py-1 rounded-full ${statusFilter === 'all' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+                  className={`px-2 py-1 rounded-full ${statusFilter === 'all' ? 'bg-skyblue text-white' : 'text-gray-500 hover:bg-gray-100'}`}
                   onClick={() => setStatusFilter('all')}
                 >
                   All
                 </button>
                 <button
-                  className={`px-2 py-1 rounded-full ${statusFilter === 'active' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+                  className={`px-2 py-1 rounded-full ${statusFilter === 'active' ? 'bg-skyblue text-white' : 'text-gray-500 hover:bg-gray-100'}`}
                   onClick={() => setStatusFilter('active')}
                 >
                   Active
                 </button>
                 <button
-                  className={`px-2 py-1 rounded-full ${statusFilter === 'completed' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+                  className={`px-2 py-1 rounded-full ${statusFilter === 'completed' ? 'bg-skyblue text-white' : 'text-gray-500 hover:bg-gray-100'}`}
                   onClick={() => setStatusFilter('completed')}
                 >
                   Completed
                 </button>
                 <button
-                  className={`px-2 py-1 rounded-full ${statusFilter === 'archived' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+                  className={`px-2 py-1 rounded-full ${statusFilter === 'archived' ? 'bg-skyblue text-white' : 'text-gray-500 hover:bg-gray-100'}`}
                   onClick={() => setStatusFilter('archived')}
                 >
                   Archived
@@ -435,7 +462,7 @@ const Lists = () => {
             
             {loading && !showDetailsModal && !showAgentItemsModal ? (
               <div className="text-center py-4">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-skyblue"></div>
               </div>
             ) : batches.length === 0 ? (
               <div className="text-center py-4">
@@ -499,21 +526,29 @@ const Lists = () => {
                               <FaEye />
                             </button>
                             
-                            <div className="relative">
+                            <div ref={dropdownRef} className="relative inline-block text-left">
+                              {/* <button
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className="flex items-center px-3 py-2 border rounded-md">
+                                <FaClipboardList />
+                              </button> */}
                               <button
-                                className="text-indigo-600 hover:text-indigo-900 mr-2"
-                                id={`dropdown-${batch.batchId}`}
+                                onClick={() => toggleDropdown(batch.batchId)}
+                                className="z-0 flex items-center px-3 py-2 border rounded-md hover:bg-gray-100"
                               >
                                 <FaClipboardList />
                               </button>
+                               
                               
                               
-                              <div className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                             {openDropdownId === batch.batchId && (
+                              <div className="z-10 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div className="py-1">
                                   {batch.status === 'active' && (
                                     <button
                                       className="text-sm text-gray-500 hover:bg-gray-100 block px-4 py-2"
                                       onClick={() => updateBatchStatus(batch.batchId, 'completed')}
+                                      
                                     >
                                       <FaCheck className="mr-2" /> Mark Completed
                                     </button>
@@ -538,6 +573,7 @@ const Lists = () => {
                                   )}
                                 </div>
                               </div>
+                              )}
                             </div>
                           </div>
                         </td>
@@ -554,7 +590,7 @@ const Lists = () => {
       {/* Batch Details Modal */}
 {showDetailsModal && (
   <div
-    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
     onClick={() => setShowDetailsModal(false)}
   >
     <div
@@ -573,7 +609,7 @@ const Lists = () => {
 
       {loading ? (
         <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-skyblue mx-auto"></div>
         </div>
       ) : (
         <>
@@ -659,7 +695,7 @@ const Lists = () => {
           <h2 className="text-2xl font-bold mb-4">Agent Lists</h2>
           {loading && !selectedAgent ? (
             <div className="text-center py-4">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-skyblue"></div>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -703,6 +739,7 @@ const Lists = () => {
               </table>
             </div>
           )}
+          
           <div className="mt-4">
             <button
               className="px-4 py-2 bg-gray-500 text-white rounded-md"

@@ -1,70 +1,230 @@
-# Getting Started with Create React App
+# 🚀 Distributo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<div align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
+  <img src="https://img.shields.io/badge/license-MIT-green.svg" />
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
+</div>
 
-## Available Scripts
+<p align="center">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="react" width="40" height="40"/>
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" alt="nodejs" width="40" height="40"/>
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" alt="mongodb" width="40" height="40"/>
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bootstrap/bootstrap-original.svg" alt="bootstrap" width="40" height="40"/>
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original.svg" alt="express" width="40" height="40"/>
+</p>
 
-In the project directory, you can run:
+<hr />
 
-### `npm start`
+## 📋 Table of Contents
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Overview](#-overview)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [API Endpoints](#-api-endpoints)
+- [Authentication](#-authentication)
+- [Screenshots](#-screenshots)
+- [License](#-license)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<hr />
 
-### `npm test`
+## 🌟 Overview
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Distributo** is a powerful task distribution system designed to efficiently distribute and manage work items among a team of agents. The platform enables administrators to upload lists of tasks via CSV or Excel files and automatically distributes them among agents using an intelligent allocation algorithm. 
 
-### `npm run build`
+The system ensures equal distribution of tasks, with a specific focus on distributing tasks among exactly 5 agents, making it perfect for small to medium-sized teams looking to balance workloads efficiently.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<hr />
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## ✨ Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- 🔐 **Secure Authentication** - User registration and login with JWT authentication
+- 👥 **Agent Management** - Create, edit, and manage agent profiles
+- 📊 **Task Distribution** - Upload and distribute tasks evenly among 5 agents
+- 📝 **List Management** - View and manage all task lists and their statuses
+- 📱 **Responsive Design** - Full mobile and desktop responsive UI
+- 🔄 **Real-time Updates** - View agent workloads and task assignments in real-time
+- 📁 **File Import** - Support for CSV, XLSX, and XLS file formats
+- 🔍 **Detailed Reporting** - View batch details and agent-specific task lists
 
-### `npm run eject`
+<hr />
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🛠 Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Frontend
+- **React.js** - Frontend framework
+- **Tailwind CSS** - UI styling
+- **Formik & Yup** - Form handling and validation
+- **Axios** - HTTP client for API requests
+- **React Router** - Client-side routing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB object modeling
+- **JWT** - JSON Web Tokens for authentication
+- **Multer** - File upload handling
+- **csvtojson & xlsx** - File parsing utilities
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+<hr />
 
-## Learn More
+## 📂 Project Structure
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+distributo/
+├── frontend/                # React frontend application
+│   ├── public/              # Static files
+│   ├── src/                 # Source files
+│   │   ├── components/      # Reusable UI components
+│   │   ├── context/         # React context (Auth, etc.)
+│   │   ├── pages/           # Page components
+│   │   ├── services/        # API service integrations
+│   │   └── utils/           # Utility functions
+│   ├── package.json         # Frontend dependencies
+│   └── README.md            # Frontend documentation
+│
+├── backend/                 # Node.js Express backend
+│   ├── config/              # Configuration files
+│   ├── controllers/         # Route controllers
+│   ├── middlewares/         # Custom middlewares
+│   ├── models/              # Mongoose models
+│   ├── routes/              # API routes
+│   ├── uploads/             # File upload directory
+│   ├── server.js            # Server entry point
+│   └── package.json         # Backend dependencies
+│
+└── README.md                # Project documentation
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<hr />
 
-### Code Splitting
+## 🚀 Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB (v4 or higher)
+- npm or yarn
 
-### Analyzing the Bundle Size
+### Setup Steps
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/distributo.git
+   cd distributo
+   ```
 
-### Making a Progressive Web App
+2. **Install backend dependencies**
+   ```bash
+   cd backend
+   npm install
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+3. **Install frontend dependencies**
+   ```bash
+   cd ../frontend
+   npm install
+   ```
 
-### Advanced Configuration
+4. **Set up environment variables**
+   
+   Create a `.env` file in the backend directory:
+   ```
+   PORT=5000
+   MONGO_URI=mongodb://localhost:27017/distributo
+   JWT_SECRET=your_jwt_secret_key
+   NODE_ENV=development
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+5. **Start the application**
+   
+   Start Backend:
+   ```bash
+   cd backend
+   npm start
+   ```
+   
+   Start Frontend (in a new terminal):
+   ```bash
+   cd frontend
+   npm start
+   ```
 
-### Deployment
+6. **Access the application**
+   
+   The application will be available at:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+<hr />
 
-### `npm run build` fails to minify
+## 💻 Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### User Registration and Login
+1. Navigate to the application URL
+2. Create a new account using the "Sign Up" option
+3. Login with your registered email and password
+
+### Managing Agents
+1. From the dashboard, navigate to the "Agents" section
+2. Add new agents with their name, email, and contact details
+3. Edit or remove existing agents as needed
+
+### Uploading and Distributing Tasks
+1. Navigate to the "Lists Management" section
+2. Upload a CSV or Excel file containing task details
+3. Ensure you have at least 5 agents registered in the system
+4. The system will automatically distribute tasks equally among 5 agents
+5. View the distribution results and batch details
+
+### Viewing Agent Tasks
+1. From the "Lists Management" section, click on "View Agent Lists"
+2. Select an agent from the tabs to view their assigned tasks
+3. Review task details and manage as needed
+
+<hr />
+
+## 📡 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login and get token
+- `GET /api/auth/me` - Get current user profile
+
+### Agents
+- `GET /api/agents` - Get all agents
+- `POST /api/agents` - Create a new agent
+- `PUT /api/agents/:id` - Update an agent
+- `DELETE /api/agents/:id` - Delete an agent
+
+### Lists
+- `POST /api/lists/upload` - Upload and distribute a task list
+- `GET /api/lists/batches` - Get all list batches
+- `GET /api/lists/batch/:batchId` - Get list items by batch
+- `GET /api/lists/agent/:agentId` - Get lists assigned to an agent
+
+<hr />
+
+## 🔐 Authentication
+
+Distributo uses JWT (JSON Web Tokens) for secure authentication. When a user logs in, a token is generated and stored in local storage. This token is used for subsequent API requests to verify the user's identity.
+
+Auth process:
+1. User registers or logs in
+2. Backend generates a JWT token
+3. Token is stored in client's local storage
+4. Token is sent with each API request in Authorization header
+5. Backend validates the token for protected routes
+
+<hr />
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+<hr />
+
+<p align="center">Made with ❤️ by Anshika Maurya</p> 
